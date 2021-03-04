@@ -41,7 +41,7 @@ public class UserDAO {
     }
 
     public void deleteUserById(long id){
-        Query query = entityManager.createQuery("delete from User where id=: id");
+        Query query = entityManager.createQuery("delete from User where id=:id");
         query.setParameter("id", id);
         query.executeUpdate();
     }

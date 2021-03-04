@@ -3,7 +3,7 @@ package ru.zettai.entities;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "my_users")
+@Table(name = "my_user")
 public class User {
 
     @Id

@@ -7,22 +7,15 @@
         <title>Добавить нового пользователя</title>
     </c:if>
     <c:if test="${!empty user.name}">
-        <title>Изменит информацию пользователя</title>
+        <title>Изменить информацию о пользователе</title>
     </c:if>
 </head>
 
 <body>
-<c:if test="${empty user.name}">
-    <c:url value="/users/addUser" var="var"/>
-</c:if>
 
-<c:if test="${!empty user.name}">
-    <c:url value="/users/updateUserInfo" var="var"/>
-</c:if>
-
-<form action="${var}" method="post">
+<form action="${pageContext.request.contextPath}/saveUser" method="post">
     <c:if test="${!empty user.name}">
-        <input type="hidden" name="id" value="${user.id}">
+        <input type="hidden" name="id" id="id" value="${user.id}">
     </c:if>
     <label for="name">Имя</label>
     <input type="text" name="name" id="name">
@@ -32,7 +25,13 @@
     <input type="text" name="age" id="age">
     <label for="email">Почта</label>
     <input type="text" name="email" id="email">
-    <input type="submit" value="Добавить пользователя">
+    <c:if test="${empty user.name}">
+        <input type="submit" value="Добавить нового пользователя">
+    </c:if>
+    <c:if test="${!empty user.name}">
+        <input type="submit" value="Изменить пользователя">
+    </c:if>
+
 </form>
 
 

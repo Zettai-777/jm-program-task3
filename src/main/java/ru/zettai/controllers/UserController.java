@@ -10,7 +10,6 @@ import ru.zettai.services.UserService;
 import java.util.List;
 
 @Controller
-@RequestMapping("/users")
 public class UserController {
 
     @Autowired
@@ -25,30 +24,29 @@ public class UserController {
 
     @GetMapping("/addUser")
     public String addNewUser(@ModelAttribute("user") User user, Model model){
-        userService.saveOrUpdateUser(user);
         model.addAttribute("user", user);
         return "edit-user";
     }
 
-    @PutMapping("/updateUserInfo")
-    public String updateUser(@RequestParam(name = "userId") long id, Model model){
-        User currentUser = userService.findUserById(id);
-        model.addAttribute("user", currentUser);
-        userService.saveOrUpdateUser(currentUser);
-        return "redirect:/all-users";
-    }
 
     @PostMapping("/saveUser")
     public String saveUser(@ModelAttribute("user") User user){
         userService.saveOrUpdateUser(user);
-        return "redirect:/all-users";
+        return "redirect:/";
     }
 
-    @DeleteMapping("/deleteUserById")
-    public String deleteUser(@ModelAttribute(name = "user") User user){
-        long id = user.getId();
+    @RequestMapping("/updateUserInfo/{userId}")
+    public String updateUser(@PathVariable(name = "userId") long id, Model model){
+        User currentUser = userService.findUserById(id);
+        model.addAttribute("user", currentUser);
+        userService.saveOrUpdateUser(currentUser);
+        return "edit-user";
+    }
+
+    @RequestMapping("/deleteUserById")
+    public String deleteUser(@RequestParam(name = "userId") long id){
         userService.deleteUserById(id);
-        return "redirect:/all-users";
+        return "redirect:/";
     }
 
 }

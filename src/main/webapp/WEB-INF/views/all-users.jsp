@@ -19,11 +19,11 @@
 
     <c:forEach var="user" items="${allUsers}">
 
-        <c:url var="updateButton" value="/users/updateUserInfo">
+        <c:url var="updateButton" value="/updateUserInfo/${user.id}">
             <c:param name="userId" value="${user.id}"/>
         </c:url>
 
-        <c:url var="deleteButton" value="/users/deleteUserById">
+        <c:url var="deleteButton" value="/deleteUserById">
             <c:param name="userId" value="${user.id}"/>
         </c:url>
 
@@ -41,7 +41,7 @@
 
 </table>
 
-<a href="/users/addUser">Добавить пользователя</a>
+<a href="${pageContext.request.contextPath}/addUser">Добавить пользователя</a>
 
 
 </body>
