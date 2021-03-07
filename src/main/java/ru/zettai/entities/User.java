@@ -1,6 +1,7 @@
 package ru.zettai.entities;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 
 @Entity
 @Table(name = "my_user")
@@ -9,13 +10,22 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank(message = "Имя пользователя не должно быть пустым!")
     @Column(name = "name")
     private String name;
+
+    @NotBlank(message = "Фамилия пользователя не должна быть пустой!")
     @Column(name = "surname")
     private String surName;
+
+    @Min(value = 1, message = "Вам не может быть 0 или меньше лет")
+    @Max(value = 150, message = "Если Вам больше 150, то вы вероятно горец или не человек.")
     @Column(name = "age")
     private int age;
 
+    @NotBlank(message = "Поле должно содержать значение!")
+    @Email(message = "Некорректный ввод почты")
     @Column(name = "email")
     private String email;
 
