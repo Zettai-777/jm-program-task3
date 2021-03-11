@@ -45,4 +45,11 @@ public class UserDAO {
         query.setParameter("id", id);
         query.executeUpdate();
     }
+
+    public User getUserByUsername(String username){
+        Query query = entityManager.createQuery("from User where name=:username");
+        query.setParameter("username", username);
+        User currentUser = (User) query.getSingleResult();
+        return currentUser;
+    }
 }
