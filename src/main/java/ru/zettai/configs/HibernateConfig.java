@@ -58,45 +58,45 @@ public class HibernateConfig {
 //        return dataSource;
 //    }
 
-//    @Bean
-//    public LocalContainerEntityManagerFactoryBean getEntityManagerFactory() {
-//        LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
-//        entityManagerFactoryBean.setDataSource(getDataSource());
-//        entityManagerFactoryBean.setPackagesToScan("ru.zettai.entities");
-//        entityManagerFactoryBean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
-//        Properties hibernateProps = new Properties();
-//        hibernateProps.setProperty("hibernate.dialect", "hibernate.dialect");
-//        hibernateProps.setProperty("hibernate.show_sql", "hibernate.showSql");
-//        entityManagerFactoryBean.setJpaProperties(hibernateProps);
-//        return entityManagerFactoryBean;
-//    }
-//
-//    @Bean
-//    public PlatformTransactionManager transactionManager() {
-//        JpaTransactionManager jpaTransactionManager = new JpaTransactionManager();
-//        jpaTransactionManager.setEntityManagerFactory(getEntityManagerFactory().getObject());
-//        jpaTransactionManager.setDataSource(getDataSource());
-//        return jpaTransactionManager;
-//    }
-
     @Bean
-    public LocalSessionFactoryBean getSessionFactory(){
-        LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
-        sessionFactoryBean.setDataSource(getDataSource());
-        sessionFactoryBean.setPackagesToScan("ru.zettai.entities");
-
+    public LocalContainerEntityManagerFactoryBean getEntityManagerFactory() {
+        LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
+        entityManagerFactoryBean.setDataSource(getDataSource());
+        entityManagerFactoryBean.setPackagesToScan("ru.zettai.entities");
+        entityManagerFactoryBean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         Properties hibernateProps = new Properties();
         hibernateProps.put("hibernate.dialect", environment.getRequiredProperty("dialect"));
         hibernateProps.put("hibernate.show_sql", environment.getRequiredProperty("showSql"));
-        sessionFactoryBean.setHibernateProperties(hibernateProps);
-
-        return sessionFactoryBean;
+        entityManagerFactoryBean.setJpaProperties(hibernateProps);
+        return entityManagerFactoryBean;
     }
 
     @Bean
-    public HibernateTransactionManager transactionManager(){
-        HibernateTransactionManager transactionManager = new HibernateTransactionManager();
-        transactionManager.setSessionFactory(getSessionFactory().getObject());
-        return transactionManager;
+    public PlatformTransactionManager transactionManager() {
+        JpaTransactionManager jpaTransactionManager = new JpaTransactionManager();
+        jpaTransactionManager.setEntityManagerFactory(getEntityManagerFactory().getObject());
+        jpaTransactionManager.setDataSource(getDataSource());
+        return jpaTransactionManager;
     }
+
+//    @Bean
+//    public LocalSessionFactoryBean getSessionFactory(){
+//        LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
+//        sessionFactoryBean.setDataSource(getDataSource());
+//        sessionFactoryBean.setPackagesToScan("ru.zettai.entities");
+//
+//        Properties hibernateProps = new Properties();
+//        hibernateProps.put("hibernate.dialect", environment.getRequiredProperty("dialect"));
+//        hibernateProps.put("hibernate.show_sql", environment.getRequiredProperty("showSql"));
+//        sessionFactoryBean.setHibernateProperties(hibernateProps);
+//
+//        return sessionFactoryBean;
+//    }
+//
+//    @Bean
+//    public HibernateTransactionManager transactionManager(){
+//        HibernateTransactionManager transactionManager = new HibernateTransactionManager();
+//        transactionManager.setSessionFactory(getSessionFactory().getObject());
+//        return transactionManager;
+//    }
 }

@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.zettai.entities.User;
 import ru.zettai.services.UserService;
+import ru.zettai.services.UserServiceImpl;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -15,17 +16,21 @@ import java.util.Map;
 @Controller
 public class UserController {
 
-    @Autowired
     private UserService userService;
 
-    @GetMapping()
+    @Autowired
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    @GetMapping("/user")
     public String showAllUsers(Model model) {
         List<User> allUsers = userService.getAllUsers();
         model.addAttribute("allUsers", allUsers);
         return "all-users";
     }
 
-    @GetMapping("/addUser")
+    @GetMapping("/admin/addUser")
     public String addNewUser(
             @ModelAttribute("user") User user,
             Model model) {

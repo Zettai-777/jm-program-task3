@@ -3,6 +3,7 @@ package ru.zettai.dao;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.zettai.entities.User;
 
 import javax.persistence.EntityManager;
@@ -50,6 +51,7 @@ public class UserDAO {
         Query query = entityManager.createQuery("from User where name=:username");
         query.setParameter("username", username);
         User currentUser = (User) query.getSingleResult();
+        System.out.println(currentUser);
         return currentUser;
     }
 }
