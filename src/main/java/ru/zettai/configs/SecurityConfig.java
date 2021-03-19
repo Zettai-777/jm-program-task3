@@ -8,9 +8,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
+import ru.zettai.configs.handlers.LoginSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -25,22 +27,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                    .antMatchers("/user")
-//                .permitAll()
-                    .hasAnyRole("USER", "ADMIN")
-                    .antMatchers("/admin/**").hasRole("ADMIN")
+        http
+                .authorizeRequests()
+                    .antMatchers("/","/registration" ).permitAll()
+                    .antMatchers("/user/**").hasAnyAuthority("USER", "ADMIN")
+                    .antMatchers("/admin/**").hasAuthority("ADMIN")
+                    .anyRequest().authenticated()
                 .and()
-                    .formLogin().loginProcessingUrl("/login")
+                    .formLogin()
+                    .loginPage("/login")
+                    .permitAll()
+                    .successHandler(new LoginSuccessHandler())
                 .and()
-                    .logout().logoutSuccessUrl("/user")
+                    .logout().permitAll()
                 .and()
                     .csrf().disable();
     }
 
     @Bean
     public PasswordEncoder passwordEncoder(){
-        return NoOpPasswordEncoder.getInstance();
+        return new BCryptPasswordEncoder();
     }
 
     @Bean

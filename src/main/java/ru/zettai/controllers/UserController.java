@@ -1,19 +1,20 @@
 package ru.zettai.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.zettai.entities.User;
 import ru.zettai.services.UserService;
-import ru.zettai.services.UserServiceImpl;
 
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
 @Controller
+@RequestMapping("/user")
 public class UserController {
 
     private UserService userService;
@@ -23,50 +24,13 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/user")
-    public String showAllUsers(Model model) {
-        List<User> allUsers = userService.getAllUsers();
-        model.addAttribute("allUsers", allUsers);
-        return "all-users";
-    }
-
-    @GetMapping("/admin/addUser")
-    public String addNewUser(
-            @ModelAttribute("user") User user,
+    @GetMapping("/")
+    public String getUserInformation(
+            Authentication authentication,
             Model model) {
-        model.addAttribute("user", user);
-        return "edit-user";
-    }
-
-
-    @PostMapping("/saveUser")
-    public String saveUser(
-            @Valid @ModelAttribute("user") User user,
-            BindingResult bindingResult,
-            Model model) {
-        if (bindingResult.hasErrors()) {
-            Map<String, String> errorsMap = ControllerUtils.getErrors(bindingResult);
-            model.mergeAttributes(errorsMap);
-            model.addAttribute("user", user);
-            return "edit-user";
-        }else {
-            userService.saveOrUpdateUser(user);
-            return "redirect:/";
-        }
-    }
-
-    @RequestMapping("/updateUserInfo/{userId}")
-    public String updateUser(@PathVariable(name = "userId") long id, Model model) {
-        User currentUser = userService.findUserById(id);
+        User currentUser = userService.getUserByUsername(authentication.getName());
         model.addAttribute("user", currentUser);
-        userService.saveOrUpdateUser(currentUser);
-        return "edit-user";
+        model.addAttribute("rolse", currentUser.getRoles());
+        return "userPage";
     }
-
-    @RequestMapping("/deleteUserById")
-    public String deleteUser(@RequestParam(name = "userId") long id) {
-        userService.deleteUserById(id);
-        return "redirect:/";
-    }
-
 }

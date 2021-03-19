@@ -1,9 +1,7 @@
 package ru.zettai.dao;
 
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import ru.zettai.entities.User;
 
 import javax.persistence.EntityManager;
@@ -16,6 +14,8 @@ public class UserDAO {
 
     @PersistenceContext
     EntityManager entityManager;
+
+
 
 //    @Autowired
 //    SessionFactory sessionFactory;
@@ -31,9 +31,27 @@ public class UserDAO {
         return allUsers;
     }
 
-    public void saveOrUpdateUser(User user){
-        User currentUser = entityManager.merge(user);
-        user.setId(currentUser.getId());
+    public void saveUser(User user){
+        entityManager.persist(user);
+    }
+
+    public void updateUser(User user){
+//        Query query = entityManager.createQuery("update User as u set u.username=:username, u.email=:email where u.id=:id");
+//        query.setParameter("username", "");
+//        query.setParameter("email", "");
+//        query.setParameter("id", user.getId());
+//        query.executeUpdate();
+//        Session session = entityManager.unwrap(Session.class);
+//        User currentUser = findUserById(user.getId());
+//        currentUser.setUsername(user.getUsername());
+//        currentUser.setPassword(user.getPassword());
+//        currentUser.setFirstName(user.getFirstName());
+//        currentUser.setSurName(user.getSurName());
+//        currentUser.setAge(user.getAge());
+//        currentUser.setEmail(user.getEmail());
+//        session.saveOrUpdate(currentUser);
+        entityManager.merge(user);
+//        user.setId(currentUser.getId());
     }
 
     public User findUserById(long id){
@@ -48,10 +66,11 @@ public class UserDAO {
     }
 
     public User getUserByUsername(String username){
-        Query query = entityManager.createQuery("from User where name=:username");
+        Query query = entityManager.createQuery("from User where username=:username");
         query.setParameter("username", username);
         User currentUser = (User) query.getSingleResult();
-        System.out.println(currentUser);
+        System.out.println(currentUser.getPassword());
+        currentUser.getRoles().forEach(role -> System.out.println(role.getRole()));
         return currentUser;
     }
 }

@@ -6,13 +6,14 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 
 import javax.servlet.Filter;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 
 public class AppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
     // Метод, указывающий на класс конфигурации
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class[]{WebConfig.class, HibernateConfig.class};
+        return new Class[]{WebConfig.class};
     }
 
     @Override
@@ -33,9 +34,15 @@ public class AppInitializer extends AbstractAnnotationConfigDispatcherServletIni
         return new Filter[]{characterEncodingFilter};
     }
 
+//    @Override
+//    public void onStartup(ServletContext aServletContext) throws ServletException {
+//        super.onStartup(aServletContext);
+//        registerHiddenFieldFilter(aServletContext);
+//    }
+//
 //    private void registerHiddenFieldFilter(ServletContext aContext) {
 //        aContext.addFilter("hiddenHttpMethodFilter",
 //                new HiddenHttpMethodFilter()).addMappingForUrlPatterns(null ,true, "/*");
-//
 //    }
+
 }

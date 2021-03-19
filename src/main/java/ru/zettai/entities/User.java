@@ -2,28 +2,35 @@ package ru.zettai.entities;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.transaction.annotation.Transactional;
+import ru.zettai.services.StringListConverter;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Имя пользователя не должно быть пустым!")
+    @Size(min=2, message = "Не меньше 5 знаков" )
     @Column(name = "username")
-    private String name;
+    private String username;
 
+    @Size(min=1, message = "Не допускается пустой пароль")
     @Column(name = "password")
     private String password;
+
+    @Transient
+    private String passwordConfirmation;
+
+    @NotBlank(message = "Имя пользователя не должно быть пустым!!")
+    @Column(name = "firstname")
+    private String firstName;
 
     @NotBlank(message = "Фамилия пользователя не должна быть пустой!")
     @Column(name = "surname")
@@ -44,13 +51,15 @@ public class User implements UserDetails {
             name="user_roles",
             joinColumns = @JoinColumn(name="user_id"),
             inverseJoinColumns = @JoinColumn(name="role_id"))
-    private Set<Role> roles = new HashSet<>();
+    @Convert(converter = StringListConverter.class)
+    private List<Role> roles;
 
     public User() {
+        roles = new ArrayList<>();
     }
 
-    public User(String name, String surname, int age, String email) {
-        this.name = name;
+    public User(String username, String surname, int age, String email) {
+        this.username = username;
         this.surName = surname;
         this.age = age;
         this.email = email;
@@ -64,12 +73,12 @@ public class User implements UserDetails {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String name) {
+        this.username = name;
     }
 
     public String getSurName() {
@@ -99,26 +108,46 @@ public class User implements UserDetails {
     public String getPassword() {
         return password;
     }
+
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public Set<Role> getRoles() {
+//    public String getUserPassword() {
+//        return userPassword;
+//    }
+//
+//    public void setUserPassword(String userPassword) {
+//        this.userPassword = userPassword;
+//    }
+
+    public List<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<Role> roles) {
+    public void setRoles(List<Role> roles) {
         this.roles = roles;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getPasswordConfirmation() {
+        return passwordConfirmation;
+    }
+
+    public void setPasswordConfirmation(String passwordConfirmation) {
+        this.passwordConfirmation = passwordConfirmation;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles;
-    }
-
-    @Override
-    public String getUsername() {
-        return name;
+        return getRoles();
     }
 
     @Override
@@ -146,9 +175,22 @@ public class User implements UserDetails {
     public String toString() {
         return "==============================\n" +
                 "User#" + id + ":\n" +
-                "name: " + name + " surName: " + surName + "\n" +
+                "name: " + firstName + " surName: " + surName + "\n" +
                 "age: " + age +
                 "\nemail:" + email + '\n'+
                 "==============================\n";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

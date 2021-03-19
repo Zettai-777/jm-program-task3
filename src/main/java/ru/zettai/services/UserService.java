@@ -9,12 +9,15 @@ public interface UserService {
 
     List<User> getAllUsers();
 
-    void saveOrUpdateUser(User user);
+    boolean saveUser(User user);
+
+    void updateUser(User user);
 
     User findUserById(long id);
 
     void deleteUserById(long id);
 
     User getUserByUsername(String username);
+
 
 }
